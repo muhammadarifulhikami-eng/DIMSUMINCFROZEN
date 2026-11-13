@@ -1,10 +1,10 @@
 /**
- * Flash Sale 5-Jam Rotasi Otomatis (5 Produk Satuan, Diskon 5%, Limit 10 pcs/produk)
+ * Flash Sale 5-Jam Rotasi Otomatis (5 Produk Satuan, Diskon 5%, Limit 3 pcs/produk)
  */
 
 const FIVE_HOURS_MS = 5 * 60 * 60 * 1000;
 const SINGLE_CATEGORIES = new Set(["Dimsum Kukus", "Dimsum Goreng", "Bakpao & Mantau"]);
-const FLASH_SALE_LIMIT = 10;
+const FLASH_SALE_LIMIT = 3;
 const FLASH_DISCOUNT_RATE = 0.05;
 
 function getFlashSaleState(products, now = Date.now()) {

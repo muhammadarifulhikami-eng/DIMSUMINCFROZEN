@@ -765,10 +765,10 @@ function computeLocalFlashSale(products) {
     const startIdx = (slot * 5) % pool.length;
     for (let i = 0; i < Math.min(5, pool.length); i++) {
       const p = pool[(startIdx + i) % pool.length];
-      items.push({ id: p.id, originalPrice: p.price, flashPrice: Math.round(p.price * 0.95), limitQty: 10 });
+      items.push({ id: p.id, originalPrice: p.price, flashPrice: Math.round(p.price * 0.95), limitQty: 3 });
     }
   }
-  return { slot, nextRotationAt, limitQty: 10, items };
+  return { slot, nextRotationAt, limitQty: 3, items };
 }
 
 function getFlashMap() {
