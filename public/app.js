@@ -956,7 +956,7 @@ function openProductDetail(productId) {
   let qty = 1;
 
   document.getElementById("detailContent").innerHTML = `
-    <img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.title)}" style="width:100%;height:auto;max-height:340px;object-fit:contain;border-radius:14px;border:1px solid var(--border-strong);margin-bottom:14px;background:var(--ivory-soft);" />
+    <img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.title)}" style="display:block;width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:14px;border:1px solid var(--border-strong);margin-bottom:14px;background:var(--ivory-soft);" />
     <span class="product-cat">${escapeHtml(p.category)} • ${escapeHtml(p.packSize || `${p.weightGram}g`)}</span>
     <h3 style="font-family:var(--font-sans);font-size:1.2rem;margin:4px 0 6px;">${escapeHtml(p.title)}</h3>
     <div style="margin-bottom:10px;">

@@ -677,6 +677,7 @@ body {
 }
 
 .modal-sm { max-width: 500px; padding: 20px; }
+#detailModal .modal-sm { max-width: 400px; }
 .modal-lg { max-width: 900px; }
 
 .modal-close, .modal-close-inline, .icon-btn {
