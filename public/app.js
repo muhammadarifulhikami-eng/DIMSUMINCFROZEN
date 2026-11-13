@@ -1538,6 +1538,27 @@ async function initAuth() {
   });
 
   document.getElementById("openProfileBtn").onclick = openAuthModal;
+  const bottomProfileBtn = document.getElementById("bottomProfileBtn");
+  if (bottomProfileBtn) bottomProfileBtn.onclick = openAuthModal;
+
+  const viewModeToggleBtn = document.getElementById("viewModeToggleBtn");
+  const applyViewMode = (isMobile) => {
+    document.body.classList.toggle("force-mobile", isMobile);
+    if (viewModeToggleBtn) {
+      viewModeToggleBtn.textContent = isMobile ? "💻 PC Mode" : "📱 Mobile Mode";
+    }
+  };
+  if (localStorage.getItem("dimsum_view_mode") === "mobile") {
+    applyViewMode(true);
+  }
+  if (viewModeToggleBtn) {
+    viewModeToggleBtn.onclick = () => {
+      const nextMobile = !document.body.classList.contains("force-mobile");
+      localStorage.setItem("dimsum_view_mode", nextMobile ? "mobile" : "pc");
+      applyViewMode(nextMobile);
+    };
+  }
+
   document.getElementById("closeAuthBtn").onclick = () => document.getElementById("authModal").classList.add("hidden");
 
   document.getElementById("tabLoginBtn").onclick = () => {
