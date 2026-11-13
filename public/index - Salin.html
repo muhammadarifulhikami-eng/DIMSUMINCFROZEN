@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dimsum Inc Frozen Official — Katalog, Ongkir Instan & QRIS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Top Promo Ticker -->
+  <div class="promo-bar">
+    <div class="promo-track">
+      <span>🔥 100% Harga Produk Utama — Tanpa Jebakan Variasi Chili Oil</span>
+      <span>⚡ Kirim Instan Gojek & Grab (45–90 Menit Sampai)</span>
+      <span>🛡️ Pembayaran QRIS Otomatis Terverifikasi Real-Time</span>
+      <span>⭐ Rating Toko Shopee 4.9/5.0 (1.3K+ Penilaian)</span>
+      <span>🔥 100% Harga Produk Utama — Tanpa Jebakan Variasi Chili Oil</span>
+    </div>
+  </div>
+
+  <!-- Sticky Navbar -->
+  <header class="navbar">
+    <div class="container nav-inner">
+      <a href="#" class="brand">
+        <div class="brand-logo">🥟</div>
+        <div>
+          <span class="brand-title">DIMSUM INC</span>
+          <span class="brand-sub">FROZEN OFFICIAL</span>
+        </div>
+      </a>
+
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input id="searchInput" type="search" placeholder="Cari shiumay, gyoza, hakau, mantau..." autocomplete="off" />
+      </div>
+
+      <div class="nav-actions">
+        <a href="https://shopee.co.id/dimsuminc_official" target="_blank" rel="noopener noreferrer" class="btn-outline-sm">
+          Shopee 4.9★
+        </a>
+        <button id="openCartBtn" class="cart-btn" type="button" aria-label="Buka Keranjang">
+          <span>🛒 Keranjang</span>
+          <span id="cartCount" class="cart-badge">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Dynamic Hero Banner Carousel -->
+    <section class="hero-section">
+      <div id="bannerCarousel" class="banner-carousel">
+        <!-- Rendered by JS -->
+      </div>
+      <div class="banner-dots" id="bannerDots"></div>
+    </section>
+
+    <!-- Trust & Feature Highlights -->
+    <section class="highlights-grid">
+      <div class="highlight-card">
+        <div class="hl-icon">❄️</div>
+        <div>
+          <h3>Fresh Frozen Higienis</h3>
+          <p>Kemasan vacuum-sealed, tahan lama di freezer, siap kukus/goreng 10 menit.</p>
+        </div>
+      </div>
+      <div class="highlight-card">
+        <div class="hl-icon">🛵</div>
+        <div>
+          <h3>Ongkir Gojek & Grab</h3>
+          <p>Hitung ongkos kirim Instant & SameDay otomatis sesuai titik lokasi Anda.</p>
+        </div>
+      </div>
+      <div class="highlight-card">
+        <div class="hl-icon">📲</div>
+        <div>
+          <h3>QRIS Auto-Check</h3>
+          <p>Scan sekali, sistem langsung memverifikasi pembayaran Anda secara otomatis.</p>
+        </div>
+      </div>
+      <div class="highlight-card">
+        <div class="hl-icon">🔒</div>
+        <div>
+          <h3>Transaksi Terproteksi</h3>
+          <p>Validasi harga server-side, proteksi CSRF, rate-limit, & verifikasi HMAC.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Catalog Filter & Sort Bar -->
+    <section id="katalog" class="catalog-header">
+      <div>
+        <h2>Katalog Dimsum Inc Frozen</h2>
+        <p class="muted">Semua produk sudah bersih dari duplikat & variasi jebakan. Harga transparan untuk produk utama.</p>
+      </div>
+      <div class="catalog-controls">
+        <div id="categoryPills" class="category-pills"></div>
+        <select id="sortSelect" class="sort-select" aria-label="Urutkan produk">
+          <option value="featured">Urutkan: Rekomendasi</option>
+          <option value="price-asc">Harga: Termurah</option>
+          <option value="price-desc">Harga: Termahal</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- Product Grid -->
+    <section id="productGrid" class="product-grid"></section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div>
+        <strong>Dimsum Inc Frozen Official</strong>
+        <p class="muted">Katalog Resmi • Pengiriman Instan • Pembayaran QRIS Otomatis</p>
+      </div>
+      <div id="modeBadge" class="mode-badge">Memeriksa koneksi server...</div>
+    </div>
+  </footer>
+
+  <!-- Cart Drawer -->
+  <div id="cartOverlay" class="drawer-overlay hidden"></div>
+  <aside id="cartDrawer" class="cart-drawer hidden" aria-label="Keranjang Belanja">
+    <div class="drawer-header">
+      <h3>🛒 Keranjang Belanja</h3>
+      <button id="closeCartBtn" class="icon-btn" type="button">✕</button>
+    </div>
+    <div id="cartItems" class="drawer-body"></div>
+    <div class="drawer-footer">
+      <div class="summary-row">
+        <span>Subtotal Produk</span>
+        <strong id="cartSubtotal">Rp 0</strong>
+      </div>
+      <button id="proceedCheckoutBtn" class="btn-primary w-full" type="button" disabled>
+        Lanjut Hitung Ongkir & Bayar QRIS →
+      </button>
+    </div>
+  </aside>
+
+  <!-- Product Detail Modal -->
+  <div id="detailModal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-card modal-sm">
+      <button id="closeDetailBtn" class="modal-close" type="button">✕</button>
+      <div id="detailContent"></div>
+    </div>
+  </div>
+
+  <!-- Checkout & QRIS Modal -->
+  <div id="checkoutModal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <h3>Checkout Instan & Pembayaran QRIS</h3>
+        <button id="closeCheckoutBtn" class="modal-close-inline" type="button">✕</button>
+      </div>
+
+      <!-- Step 1: Alamat & Ongkir Gojek/Grab -->
+      <div id="checkoutStep1" class="checkout-body">
+        <div class="checkout-grid">
+          <div class="form-col">
+            <h4>1. Data Penerima</h4>
+            <label class="field">
+              <span>Nama Lengkap</span>
+              <input id="custName" type="text" placeholder="Contoh: Budi Santoso" maxlength="80" required />
+            </label>
+            <label class="field">
+              <span>Nomor WhatsApp</span>
+              <input id="custPhone" type="tel" placeholder="0812xxxxxxxx" maxlength="20" required />
+            </label>
+            <label class="field">
+              <span>Alamat Lengkap & Patokan</span>
+              <textarea id="custAddress" rows="3" placeholder="Jl. Sudirman No. 10, RT/RW, warna pagar/patokan..." maxlength="250" required></textarea>
+            </label>
+            <label class="field">
+              <span>Catatan Pesanan (Opsional)</span>
+              <input id="custNotes" type="text" placeholder="Contoh: Tambah ice gel / titip satpam" maxlength="150" />
+            </label>
+          </div>
+
+          <div class="shipping-col">
+            <h4>2. Lokasi & Ongkir Gojek / Grab</h4>
+            <div class="location-actions">
+              <button id="useGpsBtn" type="button" class="btn-secondary">📍 Gunakan Lokasi Saya (GPS)</button>
+              <div class="geocode-row">
+                <input id="addressSearchInput" type="text" placeholder="Cari kecamatan/kota tujuan..." />
+                <button id="searchLocationBtn" type="button" class="btn-outline-sm">Cari</button>
+              </div>
+              <div class="quick-cities">
+                <button type="button" class="city-chip" data-lat="-6.2297" data-lng="106.8295">Jakarta Selatan</button>
+                <button type="button" class="city-chip" data-lat="-6.1751" data-lng="106.8650">Jakarta Pusat</button>
+                <button type="button" class="city-chip" data-lat="-6.2416" data-lng="106.9924">Bekasi</button>
+                <button type="button" class="city-chip" data-lat="-6.4025" data-lng="106.7942">Depok</button>
+              </div>
+            </div>
+
+            <div id="distanceInfo" class="distance-pill hidden"></div>
+            <div id="shippingRatesList" class="rates-list">
+              <p class="muted">Pilih lokasi untuk melihat tarif Gojek & Grab Instant / SameDay.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="checkout-footer">
+          <div class="total-preview">
+            <div>Subtotal: <strong id="coSubtotal">Rp 0</strong></div>
+            <div>Ongkir: <strong id="coShippingCost">Rp 0</strong></div>
+            <div class="grand-total">Total Bayar: <strong id="coGrandTotal">Rp 0</strong></div>
+          </div>
+          <button id="createOrderBtn" class="btn-primary" type="button" disabled>
+            Buat QRIS Pembayaran
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 2: QRIS Payment & Auto-Check -->
+      <div id="checkoutStep2" class="qris-body hidden">
+        <div class="qris-card">
+          <div class="qris-badge-row">
+            <span class="qris-logo">QRIS</span>
+            <span id="qrisOrderId" class="order-id-pill"></span>
+          </div>
+          <p class="qris-instruction">Scan QRIS menggunakan GoPay, OVO, DANA, ShopeePay, atau Mobile Banking</p>
+          <div class="qr-frame">
+            <img id="qrisImage" src="" alt="Kode QRIS Pembayaran" />
+          </div>
+          <div class="qris-amount" id="qrisAmount">Rp 0</div>
+          <div id="qrisStatusBox" class="status-box status-pending">
+            <span class="pulse-dot"></span>
+            <span id="qrisStatusText">Mengecek pembayaran otomatis...</span>
+            <span id="qrisTimer" class="timer-pill">15:00</span>
+          </div>
+          <div id="sandboxActions" class="sandbox-box hidden">
+            <p class="muted">Mode Sandbox aktif — klik tombol di bawah untuk simulasi pembayaran berhasil:</p>
+            <button id="simulatePayBtn" type="button" class="btn-secondary">✓ Simulasikan Bayar QRIS Berhasil</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "name": "dimsum-inc-frozen-web",
+  "version": "1.0.0",
+  "description": "Web Katalog & Pemesanan Dimsum Inc Frozen dengan Ongkir Instan (Gojek/Grab), QRIS Auto-Check, dan Keamanan Berlapis",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "node --watch server/server.js",
+    "clean-shopee": "node scripts/clean-shopee-catalog.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "helmet": "^8.0.0",
+    "qrcode": "^1.5.4"
+  }
+}
