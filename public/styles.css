@@ -945,10 +945,6 @@ body {
   transform: translateY(-2px);
 }
 
-@media (max-width: 768px) {
-  .footer-ecom { align-items: flex-start; }
-}
-
 /* Footer & Toast */
 .footer { border-top: 1px solid var(--border-strong); background: var(--ivory-soft); padding: 22px 0; }
 .footer-inner { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; }
@@ -1053,10 +1049,31 @@ body {
 @media (max-width: 768px) {
   .hide-sm { display: none; }
   .view-mode-btn { display: none; }
-  .container { padding: 0 12px; }
+  .container { padding-left: 12px; padding-right: 12px; }
+  .main-shell { padding-top: 16px; }
   .banner-slide { grid-template-columns: 1fr; padding: 20px 16px; }
   .banner-visual { display: none; }
   .checkout-grid { grid-template-columns: 1fr; }
+
+  /* Footer kiri-kanan sejajar & proporsional di mobile */
+  .footer { padding: 16px 0; }
+  .footer-inner {
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+  .footer-inner > div:first-child strong { font-size: 0.72rem; }
+  .footer-inner > div:first-child .muted { font-size: 0.6rem; }
+  .footer-ecom {
+    align-items: flex-end;
+    text-align: right;
+    gap: 5px;
+    flex-shrink: 0;
+  }
+  .footer-ecom-label { font-size: 0.56rem; letter-spacing: 0.04em; }
+  .footer-ecom-links { gap: 10px; }
+  .ecom-badge-link svg { width: 20px; height: 20px; }
 
   /* 4 kategori per baris, 2 baris (total 8 kategori), ikon & teks lebih kecil */
   .category-grid {
@@ -1159,7 +1176,8 @@ body.force-mobile .view-mode-btn {
   padding: 5px 9px;
   font-size: 0.68rem;
 }
-body.force-mobile .container { padding: 0 12px; }
+body.force-mobile .container { padding-left: 12px; padding-right: 12px; }
+body.force-mobile .main-shell { padding-top: 16px; }
 body.force-mobile .brand-logo { width: 34px; height: 34px; }
 body.force-mobile .brand-title { font-size: 1.1rem; }
 body.force-mobile .brand-sub { font-size: 0.54rem; }
@@ -1170,7 +1188,24 @@ body.force-mobile .profile-btn { width: 34px; height: 34px; font-size: 0.76rem; 
 body.force-mobile .banner-slide { grid-template-columns: 1fr; padding: 20px 16px; }
 body.force-mobile .banner-visual { display: none; }
 body.force-mobile .checkout-grid { grid-template-columns: 1fr; }
-body.force-mobile .footer-ecom { align-items: flex-start; }
+body.force-mobile .footer { padding: 16px 0; }
+body.force-mobile .footer-inner {
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+body.force-mobile .footer-inner > div:first-child strong { font-size: 0.72rem; }
+body.force-mobile .footer-inner > div:first-child .muted { font-size: 0.6rem; }
+body.force-mobile .footer-ecom {
+  align-items: flex-end;
+  text-align: right;
+  gap: 5px;
+  flex-shrink: 0;
+}
+body.force-mobile .footer-ecom-label { font-size: 0.56rem; letter-spacing: 0.04em; }
+body.force-mobile .footer-ecom-links { gap: 10px; }
+body.force-mobile .ecom-badge-link svg { width: 20px; height: 20px; }
 
 body.force-mobile .bottom-nav {
   display: flex;
