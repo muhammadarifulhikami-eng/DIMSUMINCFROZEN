@@ -1050,6 +1050,7 @@ body {
   .hide-sm { display: none; }
   .view-mode-btn { display: none; }
   .profile-btn { display: none; }
+  .cart-btn { display: none; }
   .container { padding-left: 12px; padding-right: 12px; }
   .main-shell { padding-top: 16px; }
   .banner-slide { grid-template-columns: 1fr; padding: 20px 16px; }
@@ -1183,7 +1184,7 @@ body.force-mobile .brand-logo { width: 34px; height: 34px; }
 body.force-mobile .brand-title { font-size: 1.1rem; }
 body.force-mobile .brand-sub { font-size: 0.54rem; }
 body.force-mobile .nav-actions { gap: 6px; }
-body.force-mobile .cart-btn { padding: 6px 10px; font-size: 0.76rem; }
+body.force-mobile .cart-btn { display: none; }
 body.force-mobile .profile-btn { display: none; }
 
 body.force-mobile .banner-slide { grid-template-columns: 1fr; padding: 20px 16px; }
