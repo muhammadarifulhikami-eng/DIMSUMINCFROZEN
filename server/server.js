@@ -10,6 +10,8 @@ const {
   sanitizeText,
   blockPrototypePollution,
   csrfOriginGuard,
+  attackShieldMiddleware,
+  createLoginLockout,
   verifyHmacSignature
 } = require("./security");
 const { calculateInstantShipping, STORE_LAT, STORE_LNG } = require("./shipping");
@@ -28,6 +30,9 @@ const {
 } = require("./auth");
 
 const app = express();
+app.set("trust proxy", 1);
+app.disable("x-powered-by");
+const loginLockout = createLoginLockout({ maxAttempts: 5, lockMs: 5 * 60_000 });
 const PORT = Number(process.env.PORT || 3000);
 const ALLOWED_ORIGIN =
   process.env.ALLOWED_ORIGIN ||
@@ -90,6 +95,7 @@ app.use(
 );
 
 app.use(blockPrototypePollution);
+app.use(attackShieldMiddleware);
 app.use("/api", createRateLimiter({ windowMs: 60_000, maxRequests: 90 }));
 app.use("/api/auth", createRateLimiter({ windowMs: 60_000, maxRequests: 20 }));
 app.use("/api", csrfOriginGuard(ALLOWED_ORIGIN));
@@ -180,13 +186,18 @@ app.post("/api/auth/login", (req, res) => {
   if (!identifier || !password) {
     return res.status(400).json({ error: "Email/Nomor HP dan password wajib diisi." });
   }
+  if (loginLockout.isLocked(req, identifier)) {
+    return res.status(429).json({ error: "Terlalu banyak percobaan login gagal. Coba lagi dalam 5 menit." });
+  }
 
   const users = loadUsers();
   const user = users.find((u) => u.email === identifier || u.phone === identifier);
   if (!user || !user.passwordHash || !verifyPassword(password, user.passwordHash)) {
+    loginLockout.recordFailure(req, identifier);
     return res.status(401).json({ error: "Email/Nomor HP atau password salah." });
   }
 
+  loginLockout.clear(req, identifier);
   setSessionCookie(res, user);
   res.json({ user: publicUser(user) });
 });
@@ -515,6 +526,14 @@ app.post("/api/sandbox/confirm-payment", (req, res) => {
     order.paidAt = Date.now();
   }
   res.json({ orderId: order.orderId, status: order.status, paidAt: order.paidAt });
+});
+
+// Global error handler — jangan pernah bocorkan stack trace internal ke client
+app.use((err, _req, res, _next) => {
+  if (err && err.type === "entity.parse.failed") {
+    return res.status(400).json({ error: "Format JSON tidak valid." });
+  }
+  res.status(500).json({ error: "Terjadi kesalahan sistem. Silakan coba lagi." });
 });
 
 if (require.main === module) {

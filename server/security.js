@@ -80,13 +80,95 @@ function csrfOriginGuard(allowedOrigin) {
     if (req.path.startsWith("/webhooks/")) return next();
 
     const origin = req.get("origin");
-    if (origin && allowedOrigin && origin !== allowedOrigin) {
+    const host = req.get("host");
+    const sameHostOrigins = host ? [`https://${host}`, `http://${host}`] : [];
+    const isAllowed = !origin || origin === allowedOrigin || sameHostOrigins.includes(origin);
+
+    if (!isAllowed) {
       return res.status(403).json({ error: "Origin tidak diizinkan (CSRF protection)." });
     }
     if (req.get("x-requested-with") !== "XMLHttpRequest") {
       return res.status(403).json({ error: "Header keamanan X-Requested-With diperlukan." });
     }
     next();
+  };
+}
+
+/**
+ * WAF / Attack Shield: blokir path traversal, file sensitif, scanner bot,
+ * HTTP Parameter Pollution, dan pola injeksi berbahaya (SQLi / XSS / Cmd).
+ */
+const BLOCKED_PATH_RE = /(\.\.|%2e%2e|\.env|\.git|\.sql|\.bak|wp-admin|wp-login|phpmyadmin|package\.json|\/server\/)/i;
+const SCANNER_UA_RE = /(sqlmap|nikto|nmap|masscan|zgrab|dirbuster|gobuster|wpscan|acunetix|nessus|nuclei)/i;
+const ATTACK_PAYLOAD_RE = /(<script\b|javascript:|onerror\s*=|onload\s*=|\bunion\s+select\b|\bsleep\s*\(|\bbenchmark\s*\(|;\s*rm\s+-rf\b|\$\([^)]+\))/i;
+
+function hasMaliciousValue(val) {
+  if (typeof val === "string") return ATTACK_PAYLOAD_RE.test(val);
+  if (Array.isArray(val)) return val.some(hasMaliciousValue);
+  if (val && typeof val === "object") return Object.values(val).some(hasMaliciousValue);
+  return false;
+}
+
+function attackShieldMiddleware(req, res, next) {
+  const ua = String(req.get("user-agent") || "");
+  if (SCANNER_UA_RE.test(ua)) {
+    return res.status(403).json({ error: "Akses ditolak oleh sistem keamanan." });
+  }
+
+  const rawUrl = String(req.originalUrl || req.url || "");
+  if (BLOCKED_PATH_RE.test(rawUrl)) {
+    return res.status(403).json({ error: "Akses path tidak diizinkan." });
+  }
+
+  for (const val of Object.values(req.query || {})) {
+    if (Array.isArray(val)) {
+      return res.status(400).json({ error: "Parameter query tidak valid." });
+    }
+  }
+
+  if (hasMaliciousValue(req.query) || hasMaliciousValue(req.body)) {
+    return res.status(400).json({ error: "Input terdeteksi mengandung karakter/pola berbahaya." });
+  }
+
+  next();
+}
+
+/**
+ * Brute-force lockout untuk endpoint login:
+ * Maksimal 5 kali gagal dalam 5 menit per kombinasi IP + identifier.
+ */
+function createLoginLockout({ maxAttempts = 5, lockMs = 5 * 60_000 } = {}) {
+  const attempts = new Map();
+
+  function keyOf(req, identifier) {
+    const ip = req.ip || req.socket?.remoteAddress || "unknown";
+    return `${ip}::${String(identifier || "").toLowerCase()}`;
+  }
+
+  return {
+    isLocked(req, identifier) {
+      const k = keyOf(req, identifier);
+      const rec = attempts.get(k);
+      if (!rec) return false;
+      if (Date.now() > rec.resetAt) {
+        attempts.delete(k);
+        return false;
+      }
+      return rec.count >= maxAttempts;
+    },
+    recordFailure(req, identifier) {
+      const k = keyOf(req, identifier);
+      const now = Date.now();
+      const rec = attempts.get(k);
+      if (!rec || now > rec.resetAt) {
+        attempts.set(k, { count: 1, resetAt: now + lockMs });
+      } else {
+        rec.count += 1;
+      }
+    },
+    clear(req, identifier) {
+      attempts.delete(keyOf(req, identifier));
+    }
   };
 }
 
@@ -106,5 +188,7 @@ module.exports = {
   sanitizeText,
   blockPrototypePollution,
   csrfOriginGuard,
+  attackShieldMiddleware,
+  createLoginLockout,
   verifyHmacSignature
 };

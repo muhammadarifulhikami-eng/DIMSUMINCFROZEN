@@ -1680,4 +1680,87 @@ async function initAuth() {
   };
 }
 
+function initSecurityShield() {
+  const isEditable = (el) =>
+    el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.tagName === "SELECT" || el.isContentEditable);
+
+  // Anti klik kanan (inspect element / save image)
+  document.addEventListener("contextmenu", (e) => {
+    e.preventDefault();
+    showToast("Konten dilindungi.");
+  });
+
+  // Anti drag gambar & seleksi/copas di luar form input
+  document.addEventListener("dragstart", (e) => e.preventDefault());
+  document.addEventListener("selectstart", (e) => {
+    if (!isEditable(e.target)) e.preventDefault();
+  });
+  document.addEventListener("copy", (e) => {
+    if (!isEditable(document.activeElement)) {
+      e.preventDefault();
+      showToast("Fitur salin dinonaktifkan.");
+    }
+  });
+  document.addEventListener("cut", (e) => {
+    if (!isEditable(document.activeElement)) e.preventDefault();
+  });
+
+  // Blokir shortcut DevTools, View Source, Save Page, Print
+  document.addEventListener("keydown", (e) => {
+    const key = (e.key || "").toLowerCase();
+    const ctrlOrCmd = e.ctrlKey || e.metaKey;
+
+    if (e.key === "F12") {
+      e.preventDefault();
+      return false;
+    }
+    if (ctrlOrCmd && e.shiftKey && ["i", "j", "c", "k"].includes(key)) {
+      e.preventDefault();
+      return false;
+    }
+    if (ctrlOrCmd && ["u", "s", "p"].includes(key)) {
+      e.preventDefault();
+      return false;
+    }
+    if (ctrlOrCmd && ["c", "x", "a"].includes(key) && !isEditable(document.activeElement)) {
+      e.preventDefault();
+      return false;
+    }
+  });
+
+  // Deteksi DevTools terbuka (docked) -> aktifkan layar pelindung anti-intip
+  let shieldEl = null;
+  const setShieldVisible = (visible) => {
+    if (visible && !shieldEl) {
+      shieldEl = document.createElement("div");
+      shieldEl.className = "security-shield-overlay";
+      shieldEl.innerHTML = `
+        <h2>MODE KEAMANAN AKTIF</h2>
+        <p>Inspeksi atau alat pengembang (DevTools) terdeteksi terbuka. Tutup DevTools untuk melanjutkan melihat katalog Dimsum Inc Frozen Official.</p>
+      `;
+      document.body.appendChild(shieldEl);
+    } else if (!visible && shieldEl) {
+      shieldEl.remove();
+      shieldEl = null;
+    }
+  };
+
+  const checkDevTools = () => {
+    const widthGap = window.outerWidth - window.innerWidth > 180;
+    const heightGap = window.outerHeight - window.innerHeight > 180;
+    setShieldVisible(widthGap || heightGap);
+  };
+
+  setInterval(checkDevTools, 1000);
+  window.addEventListener("resize", checkDevTools);
+
+  if (typeof console !== "undefined" && console.log) {
+    console.log(
+      "%cSTOP! Area ini dilindungi sistem keamanan Dimsum Inc Frozen Official.",
+      "color:#E8B84B;background:#141312;font-size:14px;font-weight:bold;padding:8px 12px;border-radius:6px;"
+    );
+  }
+}
+
+initSecurityShield();
 init();
